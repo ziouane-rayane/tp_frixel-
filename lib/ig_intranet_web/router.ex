@@ -18,6 +18,13 @@ defmodule IgIntranetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    # Routes de la live intranet_conversations
+    live "/intranet_conversations", IntranetConversationLive.Index, :index
+    live "/intranet_conversations/new", IntranetConversationLive.Index, :new
+    live "/intranet_conversations/:id/edit", IntranetConversationLive.Index, :edit
+    live "/intranet_conversations/:id", IntranetConversationLive.Show, :show
+    live "/intranet_conversations/:id/show/edit", IntranetConversationLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

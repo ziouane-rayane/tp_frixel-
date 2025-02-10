@@ -8,10 +8,13 @@ defmodule IgIntranet.Chats.IntranetConversation do
 
   use Ecto.Schema
   import Ecto.Changeset
+  alias IgIntranet.Chats.IntranetMessage
 
   schema "intranet_conversations" do
     field :conversation_type, Ecto.Enum, values: [:public, :private]
     field :conversation_status, Ecto.Enum, values: [:active, :archived]
+
+    has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
 
     timestamps(type: :utc_datetime)
   end

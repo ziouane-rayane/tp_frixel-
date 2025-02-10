@@ -14,6 +14,13 @@
 <.list>
   <:item title="Conversation type">{@intranet_conversation.conversation_type}</:item>
   <:item title="Conversation status">{@intranet_conversation.conversation_status}</:item>
+  <:item title="Messages associés">
+    <ul>
+      <%= for intranet_messages <- @intranet_conversation.intranet_messages do %>
+        <li>{intranet_messages.message_body}</li>
+      <% end %>
+    </ul>
+  </:item>
 </.list>
 
 <.back navigate={~p"/intranet_conversations"}>Back to intranet_conversations</.back>

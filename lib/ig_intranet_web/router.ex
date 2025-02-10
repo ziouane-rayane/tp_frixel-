@@ -25,6 +25,13 @@ defmodule IgIntranetWeb.Router do
     live "/intranet_conversations/:id/edit", IntranetConversationLive.Index, :edit
     live "/intranet_conversations/:id", IntranetConversationLive.Show, :show
     live "/intranet_conversations/:id/show/edit", IntranetConversationLive.Show, :edit
+
+    # Routes de la live intranet_messages
+    live "/intranet_messages", IntranetMessageLive.Index, :index
+    live "/intranet_messages/new", IntranetMessageLive.Index, :new
+    live "/intranet_messages/:id/edit", IntranetMessageLive.Index, :edit
+    live "/intranet_messages/:id", IntranetMessageLive.Show, :show
+    live "/intranet_messages/:id/show/edit", IntranetMessageLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

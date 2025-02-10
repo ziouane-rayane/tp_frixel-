@@ -13,7 +13,7 @@ defmodule IgIntranetWeb.IntranetConversationLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:intranet_conversation, Chats.get_intranet_conversation!(id))}
+     |> assign(:intranet_conversation, Chats.get_intranet_conversation_with_preload!(id))}
   end
 
   defp page_title(:show), do: "Show Intranet conversation"

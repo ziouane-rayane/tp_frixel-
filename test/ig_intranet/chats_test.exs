@@ -77,4 +77,102 @@ defmodule IgIntranet.ChatsTest do
       assert %Ecto.Changeset{} = Chats.change_intranet_conversation(intranet_conversation)
     end
   end
+
+  describe "intranet_messages" do
+    alias IgIntranet.Chats.IntranetMessage
+
+    import IgIntranet.ChatsFixtures
+
+    @invalid_attrs %{message_body: nil}
+
+    defp create_intranet_conversation(_) do
+      intranet_conversation =
+        intranet_conversation_fixture()
+
+      %{intranet_conversation: intranet_conversation}
+    end
+
+    setup [:create_intranet_conversation]
+
+    test "list_intranet_messages/0 returns all intranet_messages", %{
+      intranet_conversation: intranet_conversation
+    } do
+      intranet_message =
+        intranet_message_fixture(intranet_conversation_id: intranet_conversation.id)
+
+      assert Chats.list_intranet_messages() == [intranet_message]
+    end
+
+    test "get_intranet_message!/1 returns the intranet_message with given id", %{
+      intranet_conversation: intranet_conversation
+    } do
+      intranet_message =
+        intranet_message_fixture(intranet_conversation_id: intranet_conversation.id)
+
+      assert Chats.get_intranet_message!(intranet_message.id) == intranet_message
+    end
+
+    test "create_intranet_message/1 with valid data creates a intranet_message", %{
+      intranet_conversation: intranet_conversation
+    } do
+      valid_attrs = %{
+        message_body: "some message_body",
+        intranet_conversation_id: intranet_conversation.id
+      }
+
+      assert {:ok, %IntranetMessage{} = intranet_message} =
+               Chats.create_intranet_message(valid_attrs)
+
+      assert intranet_message.message_body == "some message_body"
+    end
+
+    test "create_intranet_message/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Chats.create_intranet_message(@invalid_attrs)
+    end
+
+    test "update_intranet_message/2 with valid data updates the intranet_message", %{
+      intranet_conversation: intranet_conversation
+    } do
+      intranet_message =
+        intranet_message_fixture(intranet_conversation_id: intranet_conversation.id)
+
+      update_attrs = %{message_body: "some updated message_body"}
+
+      assert {:ok, %IntranetMessage{} = intranet_message} =
+               Chats.update_intranet_message(intranet_message, update_attrs)
+
+      assert intranet_message.message_body == "some updated message_body"
+    end
+
+    test "update_intranet_message/2 with invalid data returns error changeset", %{
+      intranet_conversation: intranet_conversation
+    } do
+      intranet_message =
+        intranet_message_fixture(intranet_conversation_id: intranet_conversation.id)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Chats.update_intranet_message(intranet_message, @invalid_attrs)
+
+      assert intranet_message == Chats.get_intranet_message!(intranet_message.id)
+    end
+
+    test "delete_intranet_message/1 deletes the intranet_message", %{
+      intranet_conversation: intranet_conversation
+    } do
+      intranet_message =
+        intranet_message_fixture(intranet_conversation_id: intranet_conversation.id)
+
+      assert {:ok, %IntranetMessage{}} = Chats.delete_intranet_message(intranet_message)
+      assert_raise Ecto.NoResultsError, fn -> Chats.get_intranet_message!(intranet_message.id) end
+    end
+
+    test "change_intranet_message/1 returns a intranet_message changeset", %{
+      intranet_conversation: intranet_conversation
+    } do
+      intranet_message =
+        intranet_message_fixture(intranet_conversation_id: intranet_conversation.id)
+
+      assert %Ecto.Changeset{} = Chats.change_intranet_message(intranet_message)
+    end
+  end
 end

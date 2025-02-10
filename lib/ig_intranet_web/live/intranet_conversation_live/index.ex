@@ -6,7 +6,8 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :intranet_conversations, Chats.list_intranet_conversations())}
+    {:ok,
+     stream(socket, :intranet_conversations, Chats.list_intranet_conversation_with_preload())}
   end
 
   @impl true
@@ -17,7 +18,7 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Intranet conversation")
-    |> assign(:intranet_conversation, Chats.get_intranet_conversation!(id))
+    |> assign(:intranet_conversation, Chats.get_intranet_conversation_with_preload!(id))
   end
 
   defp apply_action(socket, :new, _params) do

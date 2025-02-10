@@ -18,4 +18,23 @@ defmodule IgIntranet.ChatsFixtures do
 
     intranet_conversation
   end
+
+  @doc """
+  Generate a intranet_message.
+  """
+  def intranet_message_fixture(attrs \\ %{}) do
+    intranet_conversation_id =
+      attrs[:intranet_conversation_id] ||
+        intranet_conversation_fixture(attrs[:intranet_conversation] || %{}).id
+
+    {:ok, intranet_message} =
+      attrs
+      |> Enum.into(%{
+        intranet_conversation_id: intranet_conversation_id,
+        message_body: "some message_body"
+      })
+      |> IgIntranet.Chats.create_intranet_message()
+
+    intranet_message
+  end
 end

@@ -13,6 +13,7 @@ defmodule IgIntranet.Chats.IntranetConversation do
   schema "intranet_conversations" do
     field :conversation_type, Ecto.Enum, values: [:public, :private]
     field :conversation_status, Ecto.Enum, values: [:active, :archived]
+    field :conversation_topic, :string
 
     has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
 
@@ -22,7 +23,8 @@ defmodule IgIntranet.Chats.IntranetConversation do
   @doc false
   def changeset(intranet_conversation, attrs) do
     intranet_conversation
-    |> cast(attrs, [:conversation_type, :conversation_status])
-    |> validate_required([:conversation_type, :conversation_status])
+    |> cast(attrs, [:conversation_type, :conversation_status, :conversation_topic])
+    |> validate_required([:conversation_type, :conversation_status, :conversation_topic])
+    |> unique_constraint(:conversation_topic)
   end
 end

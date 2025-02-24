@@ -33,8 +33,10 @@ defmodule IgIntranet.Chats do
   end
 
   def list_intranet_conversation_filter_with_preload(filter) do
+    filter = "#{filter}%"
+
     IntranetConversation
-    |> where([conv], conv.conversation_topic == ^filter)
+    |> where([conv], ilike(conv.conversation_topic, ^filter))
     |> Repo.all()
     |> Repo.preload(:intranet_messages)
   end

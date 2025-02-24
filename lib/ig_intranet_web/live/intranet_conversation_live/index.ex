@@ -51,10 +51,7 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
         socket
       ) do
     intranet_conversations =
-      Chats.list_intranet_conversation_with_preload()
-      |> Enum.filter(fn intranet_conversation ->
-        intranet_conversation.conversation_topic =~ ~r/#{filter}/i
-      end)
+      Chats.list_intranet_conversation_filter_with_preload(filter)
 
     {:noreply, stream(socket, :intranet_conversations, intranet_conversations, reset: true)}
   end

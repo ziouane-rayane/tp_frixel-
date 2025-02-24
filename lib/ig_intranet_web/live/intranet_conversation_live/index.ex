@@ -45,6 +45,21 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
   end
 
   @impl true
+  def handle_event(
+        "validate_filter",
+        %{"intranet_conversation" => %{"conversation_topic_filter" => filter}},
+        socket
+      ) do
+    intranet_conversations =
+      Chats.list_intranet_conversation_with_preload()
+      |> Enum.filter(fn intranet_conversation ->
+        intranet_conversation.conversation_topic == filter
+      end)
+
+    {:noreply, stream(socket, :intranet_conversations, intranet_conversations, reset: true)}
+  end
+
+  @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     intranet_conversation = Chats.get_intranet_conversation!(id)
     {:ok, _} = Chats.delete_intranet_conversation(intranet_conversation)

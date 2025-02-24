@@ -6,8 +6,11 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    form_filter = Chats.change_intranet_conversation(%Chats.IntranetConversation{})
+
     {:ok,
-     stream(socket, :intranet_conversations, Chats.list_intranet_conversation_with_preload())}
+     stream(socket, :intranet_conversations, Chats.list_intranet_conversation_with_preload())
+     |> assign(:form_filter, to_form(form_filter))}
   end
 
   @impl true

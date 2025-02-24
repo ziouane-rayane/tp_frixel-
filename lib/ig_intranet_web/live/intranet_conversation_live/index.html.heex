@@ -7,6 +7,18 @@
   </:actions>
 </.header>
 
+<.simple_form
+  for={@form_filter}
+  id="intranet_conversation-filter-form"
+  phx-change="validate_filter"
+>
+  <.input
+    field={@form_filter[:conversation_topic_filter]}
+    type="text"
+    label="Recherche conversation"
+  />
+</.simple_form>
+
 <.table
   id="intranet_conversations"
   rows={@streams.intranet_conversations}

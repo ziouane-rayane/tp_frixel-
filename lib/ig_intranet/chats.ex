@@ -32,6 +32,15 @@ defmodule IgIntranet.Chats do
     |> Repo.preload(:intranet_messages)
   end
 
+  def list_intranet_conversation_filter_with_preload(filter) do
+    filter = "#{filter}%"
+
+    IntranetConversation
+    |> where([conv], ilike(conv.conversation_topic, ^filter))
+    |> Repo.all()
+    |> Repo.preload(:intranet_messages)
+  end
+
   @doc """
   Gets a single intranet_conversation.
 

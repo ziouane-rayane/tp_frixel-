@@ -28,6 +28,9 @@
     end
   }
 >
+  <:col :let={{_id, intranet_conversation}} label="Date création">
+    {intranet_conversation.inserted_at |> Calendar.strftime("%d-%m-%Y %H:%M:%S")}
+  </:col>
   <:col :let={{_id, intranet_conversation}} label="Conversation topic">
     {intranet_conversation.conversation_topic}
   </:col>

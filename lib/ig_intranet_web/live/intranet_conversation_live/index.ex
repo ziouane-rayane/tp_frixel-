@@ -41,7 +41,8 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
         {IgIntranetWeb.IntranetConversationLive.FormComponent, {:saved, intranet_conversation}},
         socket
       ) do
-    {:noreply, stream_insert(socket, :intranet_conversations, intranet_conversation)}
+    {:noreply,
+     stream_insert(socket, :intranet_conversations, intranet_conversation, limit: 5, at: 0)}
   end
 
   @impl true

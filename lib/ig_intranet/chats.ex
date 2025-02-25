@@ -28,7 +28,10 @@ defmodule IgIntranet.Chats do
       [%intranet_conversation{...intranet_message{}}, ...]
   """
   def list_intranet_conversation_with_preload do
-    Repo.all(IntranetConversation)
+    IntranetConversation
+    |> order_by([conv], desc: conv.inserted_at)
+    |> limit(5)
+    |> Repo.all()
     |> Repo.preload(:intranet_messages)
   end
 
@@ -37,6 +40,8 @@ defmodule IgIntranet.Chats do
 
     IntranetConversation
     |> where([conv], ilike(conv.conversation_topic, ^filter))
+    |> order_by([conv], desc: conv.inserted_at)
+    |> limit(5)
     |> Repo.all()
     |> Repo.preload(:intranet_messages)
   end

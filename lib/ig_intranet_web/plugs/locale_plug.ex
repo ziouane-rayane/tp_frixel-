@@ -1,6 +1,6 @@
 defmodule IgIntranetWeb.Plugs.Locale do
   @moduledoc """
-  Custom plug to deal with locale.
+  Custom plug to deal with locale for static page.
 
   """
   import Plug.Conn
@@ -22,5 +22,23 @@ defmodule IgIntranetWeb.Plugs.Locale do
     locale = conn |> get_session(:locale)
     Gettext.put_locale(IgIntranetWeb.Gettext, locale)
     conn
+  end
+end
+
+defmodule IgIntranetWeb.LiveLocale do
+  @moduledoc """
+  Custom plug to deal with locale for live page.
+
+  """
+  def on_mount(:default, %{"locale" => locale}, _session, socket) do
+    Gettext.put_locale(IgIntranetWeb.Gettext, locale)
+    {:cont, socket}
+  end
+
+  # catch-all case
+  def on_mount(:default, _params, session, socket) do
+    # on récupère l'éventuel choix de langue précédent
+    Gettext.put_locale(IgIntranetWeb.Gettext, session["locale"])
+    {:cont, socket}
   end
 end

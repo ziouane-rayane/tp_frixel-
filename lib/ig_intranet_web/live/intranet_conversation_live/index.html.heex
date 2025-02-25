@@ -18,7 +18,9 @@
     label="Recherche conversation"
   />
 </.simple_form>
-<% IO.inspect(Gettext.get_locale(), label: "Gettext.get_locale()- live  >>> ") %>
+<% IO.inspect(Gettext.get_locale(IgIntranetWeb.Gettext),
+  label: "Gettext.get_locale()- live  >>> "
+) %>
 
 <.table
   id="intranet_conversations"

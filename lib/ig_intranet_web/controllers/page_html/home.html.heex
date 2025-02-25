@@ -61,12 +61,20 @@
         "Build rich, interactive web applications quickly, with less code and fewer moving parts. Join our growing community of developers using Phoenix to craft APIs, HTML5 apps and more, for fun or at scale."
       )}
     </p>
-    <nav role="navigation">
-      <ul class="nav nav-pills pull-right">
-        <li>{switch_locale_path(:en, "English")}</li>
-        <li>{switch_locale_path(:fr, "Français")}</li>
-      </ul>
-    </nav>
+    <div class="w-full">
+      <nav class="border-b text-sm flex justify-start">
+        <.switch_locale_path
+          locale={:en}
+          language="English"
+          active={Gettext.get_locale(IgIntranetWeb.Gettext) == "en"}
+        />
+        <.switch_locale_path
+          locale={:fr}
+          language="Français"
+          active={Gettext.get_locale(IgIntranetWeb.Gettext) == "fr"}
+        />
+      </nav>
+    </div>
     <div class="flex">
       <div class="w-full sm:w-auto">
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">

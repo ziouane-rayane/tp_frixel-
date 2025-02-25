@@ -6,9 +6,5 @@ defmodule IgIntranetWeb.PageHTML do
   """
   use IgIntranetWeb, :html
 
-  def switch_locale_path(locale, language) do
-    ~s|<a href="/?locale=#{locale}">#{language}</a>| |> Phoenix.HTML.raw()
-  end
-
   embed_templates "page_html/*"
 end

@@ -22,6 +22,7 @@ defmodule IgIntranetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/same_home_but_different", PageController, :home
 
     # Routes de la live intranet_conversations
     live "/intranet_conversations", IntranetConversationLive.Index, :index

@@ -1,4 +1,7 @@
 defmodule IgIntranetWeb.Router do
+  @moduledoc """
+  Router module.
+  """
   use IgIntranetWeb, :router
 
   pipeline :browser do
@@ -8,6 +11,7 @@ defmodule IgIntranetWeb.Router do
     plug :put_root_layout, html: {IgIntranetWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug IgIntranetWeb.Plugs.Locale
   end
 
   pipeline :api do
@@ -18,6 +22,7 @@ defmodule IgIntranetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/same_home_but_different", PageController, :home
 
     # Routes de la live intranet_conversations
     live "/intranet_conversations", IntranetConversationLive.Index, :index

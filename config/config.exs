@@ -22,6 +22,11 @@ config :ig_intranet, IgIntranetWeb.Endpoint,
   pubsub_server: IgIntranet.PubSub,
   live_view: [signing_salt: "UCo6j/Ve"]
 
+# Specify which languages you support
+# To create .po files for a language run `mix gettext.merge priv/gettext --locale fr`
+# (fr is France, change to whatever language you want - make sure it's included in the locales config below)
+config :ig_intranet, IgIntranetWeb.Gettext, allowed_locales: ~w(en fr), default_locale: "fr"
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

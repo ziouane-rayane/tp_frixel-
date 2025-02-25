@@ -18,6 +18,7 @@
     label="Recherche conversation"
   />
 </.simple_form>
+<% IO.inspect(Gettext.get_locale(), label: "Gettext.get_locale() >>> ") %>
 
 <.table
   id="intranet_conversations"
@@ -31,7 +32,7 @@
   <:col :let={{_id, intranet_conversation}} label="Date création">
     {intranet_conversation.inserted_at |> Calendar.strftime("%d-%m-%Y %H:%M:%S")}
   </:col>
-  <:col :let={{_id, intranet_conversation}} label="Conversation topic">
+  <:col :let={{_id, intranet_conversation}} label={gettext("Conversation topic")}>
     {intranet_conversation.conversation_topic}
   </:col>
   <:col :let={{_id, intranet_conversation}} label="Conversation type">

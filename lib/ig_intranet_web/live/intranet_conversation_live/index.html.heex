@@ -29,16 +29,7 @@
         JS.navigate(~p"/intranet_conversations/#{intranet_conversations}")
       end
     }
-    opts={[
-      table_attrs: [class: "w-[40rem] mt-11 sm:w-full"],
-      thead_th_attrs: [class: "text-sm text-left leading-6 text-zinc-500 font-normal"],
-      tbody_attrs: [
-        class:
-          "relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
-      ],
-      tbody_td_attrs: [class: "relative p-0 hover:cursor-pointer"],
-      tbody_tr_attrs: [class: "group hover:bg-zinc-50"]
-    ]}
+    opts={IgIntranetWeb.Components.FlopConfig.table_opts()}
   >
     <:col :let={{_id, intranet_conversation}} field={:inserted_at} label="Date création">
       {intranet_conversation.inserted_at |> Calendar.strftime("%d-%m-%Y %H:%M:%S")}
@@ -87,8 +78,12 @@
       </span>
     </:action>
   </Flop.Phoenix.table>
+  <Flop.Phoenix.pagination
+    meta={@meta}
+    path={~p"/intranet_conversations"}
+    opts={IgIntranetWeb.Components.FlopConfig.pagination_opts()}
+  />
 </div>
-<Flop.Phoenix.pagination meta={@meta} path={~p"/intranet_conversations"} />
 
 <.modal
   :if={@live_action in [:new, :edit]}

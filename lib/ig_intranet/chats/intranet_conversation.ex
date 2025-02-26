@@ -25,7 +25,8 @@ defmodule IgIntranet.Chats.IntranetConversation do
       :conversation_topic,
       :inserted_at,
       :updated_at
-    ]
+    ],
+    default_limit: 4
   }
 
   schema "intranet_conversations" do

@@ -12,7 +12,6 @@
   meta={@meta}
   id="user-filter-form"
 />
-
 <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
   <Flop.Phoenix.table
     items={@streams.intranet_conversations}
@@ -25,7 +24,12 @@
     }
     opts={IgIntranetWeb.Components.FlopConfig.table_opts()}
   >
-    <:col :let={{_id, intranet_conversation}} field={:inserted_at} label="Date création">
+    <:col
+      :let={{_id, intranet_conversation}}
+      field={:inserted_at}
+      label="Date création"
+      col_style="width: 20%"
+    >
       {intranet_conversation.inserted_at |> Calendar.strftime("%d-%m-%Y %H:%M:%S")}
     </:col>
     <:col

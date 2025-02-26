@@ -17,14 +17,25 @@ defmodule IgIntranet.Chats.IntranetConversation do
       :conversation_status,
       :conversation_topic,
       :inserted_at,
-      :updated_at
+      :updated_at,
+      :message_body
     ],
     sortable: [
       :conversation_type,
       :conversation_status,
       :conversation_topic,
       :inserted_at,
-      :updated_at
+      :updated_at,
+      :message_body
+    ],
+    adapter_opts: [
+      join_fields: [
+        message_body: [
+          binding: :intranet_messages,
+          field: :message_body,
+          ecto_type: :string
+        ]
+      ]
     ],
     default_limit: 4
   }

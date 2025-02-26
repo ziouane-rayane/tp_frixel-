@@ -56,6 +56,7 @@ defmodule IgIntranetWeb.Components.FlopConfig do
 
   def filter_form_fields() do
     [
+      message_body: [op: :ilike_and],
       inserted_at: [label: gettext("Inserted after"), op: :>],
       conversation_topic: [op: :ilike_and],
       conversation_type: [

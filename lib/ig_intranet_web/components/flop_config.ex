@@ -52,4 +52,15 @@ defmodule IgIntranetWeb.Components.FlopConfig do
     </.form>
     """
   end
+
+  def filter_form_fields() do
+    [
+      conversation_topic: [op: :ilike_and],
+      conversation_type: [
+        type: "select",
+        prompt: "",
+        options: Ecto.Enum.values(IgIntranet.Chats.IntranetConversation, :conversation_type)
+      ]
+    ]
+  end
 end

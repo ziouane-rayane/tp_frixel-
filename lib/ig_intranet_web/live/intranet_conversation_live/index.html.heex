@@ -7,17 +7,11 @@
   </:actions>
 </.header>
 
-<.simple_form
-  for={@form_filter}
-  id="intranet_conversation-filter-form"
-  phx-change="validate_filter"
->
-  <.input
-    field={@form_filter[:conversation_topic_filter]}
-    type="text"
-    label="Recherche conversation"
-  />
-</.simple_form>
+<IgIntranetWeb.Components.FlopConfig.filter_form
+  fields={[:conversation_topic, :conversation_type]}
+  meta={@meta}
+  id="user-filter-form"
+/>
 
 <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
   <Flop.Phoenix.table

@@ -36,6 +36,8 @@ config :ig_intranet, IgIntranetWeb.Gettext, allowed_locales: ~w(en fr), default_
 # at the `config/runtime.exs`.
 config :ig_intranet, IgIntranet.Mailer, adapter: Swoosh.Adapters.Local
 
+config :flop, repo: IgIntranet.Repo
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",

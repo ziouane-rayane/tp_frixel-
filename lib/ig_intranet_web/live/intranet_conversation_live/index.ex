@@ -9,7 +9,7 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
     form_filter = Chats.change_intranet_conversation(%Chats.IntranetConversation{})
 
     {:ok,
-     stream(socket, :intranet_conversations, Chats.list_intranet_conversation_with_preload())
+     socket
      |> assign(:form_filter, to_form(form_filter))}
   end
 
@@ -30,10 +30,15 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
     |> assign(:intranet_conversation, %IntranetConversation{})
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
+    {:ok, {intranet_conversations, meta}} =
+      Chats.list_pets(params)
+
     socket
     |> assign(:page_title, "Listing Intranet conversations")
     |> assign(:intranet_conversation, nil)
+    |> assign(:meta, meta)
+    |> stream(:intranet_conversations, intranet_conversations, reset: true)
   end
 
   @impl true
@@ -41,8 +46,10 @@ defmodule IgIntranetWeb.IntranetConversationLive.Index do
         {IgIntranetWeb.IntranetConversationLive.FormComponent, {:saved, intranet_conversation}},
         socket
       ) do
-    {:noreply,
-     stream_insert(socket, :intranet_conversations, intranet_conversation, limit: 5, at: 0)}
+    {
+      :noreply,
+      stream_insert(socket, :intranet_conversations, intranet_conversation, at: 0)
+    }
   end
 
   @impl true

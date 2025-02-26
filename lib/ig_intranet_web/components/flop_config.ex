@@ -26,6 +26,7 @@ defmodule IgIntranetWeb.Components.FlopConfig do
   end
 
   use Phoenix.Component
+  use Gettext, backend: IgIntranetWeb.Gettext
 
   attr :fields, :list, required: true
   attr :meta, Flop.Meta, required: true
@@ -55,6 +56,7 @@ defmodule IgIntranetWeb.Components.FlopConfig do
 
   def filter_form_fields() do
     [
+      inserted_at: [label: gettext("Inserted after"), op: :>],
       conversation_topic: [op: :ilike_and],
       conversation_type: [
         type: "select",

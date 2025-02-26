@@ -52,7 +52,7 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: lib/ig_intranet_web/live/intranet_conversation_live/index.html.heex:35
+#: lib/ig_intranet_web/live/intranet_conversation_live/index.html.heex:34
 #, elixir-autogen, elixir-format
 msgid "Conversation topic"
 msgstr "Sujet de conversation"
@@ -66,3 +66,8 @@ msgstr "Construisez des applications web riches, interactives, avec moins de cod
 #, elixir-autogen, elixir-format
 msgid "Peace of mind from prototype to production."
 msgstr "Sérénité, du prototype à la production. "
+
+#: lib/ig_intranet_web/components/flop_config.ex:59
+#, elixir-autogen, elixir-format
+msgid "Inserted after"
+msgstr "Insérée après"

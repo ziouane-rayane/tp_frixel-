@@ -234,11 +234,11 @@ defmodule IgIntranet.Chats do
   end
 
   defp broadcast({:error, _reason} = error, _event), do: error
+
   defp broadcast({:ok, message}, event) do
     Phoenix.PubSub.broadcast(IgIntranet.PubSub, "messages", {event, message})
     {:ok, message}
   end
-
 
   @doc """
   Deletes a intranet_message.

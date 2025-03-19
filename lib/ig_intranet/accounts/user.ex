@@ -11,7 +11,6 @@ defmodule IgIntranet.Accounts.User do
 
     has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
 
-
     timestamps(type: :utc_datetime)
   end
 

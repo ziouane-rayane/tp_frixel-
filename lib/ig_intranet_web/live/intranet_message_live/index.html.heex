@@ -10,16 +10,14 @@
 <.table
   id="intranet_messages"
   rows={@intranet_messages}
-  row_click={
-    fn intranet_message -> JS.navigate(~p"/intranet_messages/#{intranet_message}") end
-  }
+  row_click={fn intranet_message -> JS.navigate(~p"/intranet_messages/#{intranet_message}") end}
 >
   <:col :let={intranet_message} label="Conversation rattachée">
     {intranet_message.intranet_conversation &&
       "#{intranet_message.intranet_conversation.id}"}
   </:col>
   <:col :let={intranet_message} label="Message body">{intranet_message.message_body}</:col>
-  <:action :let={ intranet_message}>
+  <:action :let={intranet_message}>
     <div class="sr-only">
       <.link navigate={~p"/intranet_messages/#{intranet_message.id}"}>Show</.link>
     </div>
@@ -27,7 +25,9 @@
   </:action>
   <:action :let={intranet_message}>
     <.link
-      phx-click={JS.push("delete", value: %{id: intranet_message.id}) |> hide("##{intranet_message.id}")}
+      phx-click={
+        JS.push("delete", value: %{id: intranet_message.id}) |> hide("##{intranet_message.id}")
+      }
       data-confirm="Are you sure?"
     >
       Delete

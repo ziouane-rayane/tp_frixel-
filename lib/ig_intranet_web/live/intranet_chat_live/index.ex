@@ -8,7 +8,8 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Chats.subscribe()
-     end
+    end
+
     {:ok, socket}
   end
 
@@ -18,19 +19,10 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-
-
   @impl true
   def handle_info({:message_created, %{id: message_id}}, socket) do
     created_message = Chats.get_intranet_message_with_preload!(message_id)
-    created_message |> IO.inspect(label: "lib/ig_intranet_web/live/intranet_chat_live/index.ex:26")
-    socket =
-      case (created_message.user_id != socket.assigns.current_user.id) do
-       true ->
-        socket |>  assign(:intranet_messages,[created_message | socket.assigns.intranet_messages])
-
-       _ -> socket
-    end
+    socket = socket |> stream_insert(:intranet_messages, created_message)
     {:noreply, socket}
   end
 
@@ -42,7 +34,7 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
     socket
     |> assign(:page_title, "Listing Intranet messages")
     |> assign(:intranet_message, nil)
-    |> assign(:intranet_messages, Chats.list_intranet_message_with_preload())
+    |> stream(:intranet_messages, Chats.list_intranet_message_with_preload(), reset: true)
   end
 
   defp apply_action(socket, :new, _params) do
@@ -53,7 +45,4 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
     |> assign(:intranet_conversations, intranet_conversations)
     |> assign(:intranet_message, %IntranetMessage{})
   end
-
-
-
 end

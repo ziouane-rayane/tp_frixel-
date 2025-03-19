@@ -40,9 +40,6 @@ defmodule IgIntranetWeb.Router do
     live "/intranet_messages/:id/edit", IntranetMessageLive.Index, :edit
     live "/intranet_messages/:id", IntranetMessageLive.Show, :show
     live "/intranet_messages/:id/show/edit", IntranetMessageLive.Show, :edit
-
-
-
   end
 
   # Other scopes may use custom stacks.
@@ -92,7 +89,6 @@ defmodule IgIntranetWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/intranet_chat", IntranetChatLive.Index, :index
       live "/intranet_chat/new", IntranetChatLive.Index, :new
-
     end
   end
 

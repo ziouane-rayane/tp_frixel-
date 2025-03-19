@@ -1,45 +1,41 @@
 <.header>
   Listing Intranet messages
   <:actions>
-    <.link patch={~p"/intranet_messages/new"}>
+    <.link patch={~p"/intranet_chat/new"}>
       <.button>New Intranet message</.button>
     </.link>
   </:actions>
 </.header>
 
+<p> <%= @current_user.email %> </p>
 <.table
   id="intranet_messages"
   rows={@intranet_messages}
-  row_click={
-    fn intranet_message -> JS.navigate(~p"/intranet_messages/#{intranet_message}") end
-  }
 >
   <:col :let={intranet_message} label="Conversation rattachée">
+
     {intranet_message.intranet_conversation &&
       "#{intranet_message.intranet_conversation.id}"}
   </:col>
+<:col :let={intranet_message} label="user">{intranet_message.user_id}</:col>
+  
   <:col :let={intranet_message} label="Message body">{intranet_message.message_body}</:col>
-  <:action :let={ intranet_message}>
+  <:action :let={intranet_message}>
     <div class="sr-only">
       <.link navigate={~p"/intranet_messages/#{intranet_message.id}"}>Show</.link>
     </div>
     <.link patch={~p"/intranet_messages/#{intranet_message.id}/edit"}>Edit</.link>
   </:action>
   <:action :let={intranet_message}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: intranet_message.id}) |> hide("##{intranet_message.id}")}
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
   </:action>
 </.table>
+
 
 <.modal
   :if={@live_action in [:new, :edit]}
   id="intranet_message-modal"
   show
-  on_cancel={JS.patch(~p"/intranet_messages")}
+  on_cancel={JS.patch(~p"/intranet_chat")}
 >
   <.live_component
     module={IgIntranetWeb.IntranetMessageLive.FormComponent}
@@ -48,6 +44,7 @@
     action={@live_action}
     intranet_message={@intranet_message}
     intranet_conversations={@intranet_conversations |> Enum.map(&{&1.id, &1.id})}
-    patch={~p"/intranet_messages"}
+    current_user = {@current_user}
+    patch={~p"/intranet_chat"}
   />
 </.modal>

@@ -41,8 +41,7 @@ defmodule IgIntranetWeb.Router do
     live "/intranet_messages/:id", IntranetMessageLive.Show, :show
     live "/intranet_messages/:id/show/edit", IntranetMessageLive.Show, :edit
 
-    live "/intranet_chat", IntranetChatLive.Index, :index
-    live "/intranet_chat/new", IntranetChatLive.Index, :new
+
 
   end
 
@@ -91,6 +90,9 @@ defmodule IgIntranetWeb.Router do
       on_mount: [{IgIntranetWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/intranet_chat", IntranetChatLive.Index, :index
+      live "/intranet_chat/new", IntranetChatLive.Index, :new
+
     end
   end
 

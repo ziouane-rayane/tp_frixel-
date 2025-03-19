@@ -17,6 +17,8 @@
     {intranet_message.intranet_conversation &&
       "#{intranet_message.intranet_conversation.id}"}
   </:col>
+<:col :let={intranet_message} label="user">{intranet_message.user_id}</:col>
+  
   <:col :let={intranet_message} label="Message body">{intranet_message.message_body}</:col>
   <:action :let={intranet_message}>
     <div class="sr-only">

@@ -43,7 +43,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
         {IgIntranetWeb.IntranetMessageLive.FormComponent, {:saved, intranet_message}},
         socket
       ) do
-    {:noreply, assign(socket, :intranet_messages, intranet_message)}
+    {:noreply, update(socket, :intranet_messages, intranet_message)}
   end
 
 

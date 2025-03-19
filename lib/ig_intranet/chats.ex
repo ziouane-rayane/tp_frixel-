@@ -207,6 +207,7 @@ defmodule IgIntranet.Chats do
     %IntranetMessage{}
     |> IntranetMessage.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:message_created)
   end
 
   @doc """
@@ -225,7 +226,19 @@ defmodule IgIntranet.Chats do
     intranet_message
     |> IntranetMessage.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:message_updated)
   end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(IgIntranet.PubSub, "messages")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+  defp broadcast({:ok, message}, event) do
+    Phoenix.PubSub.broadcast(IgIntranet.PubSub, "messages", {event, message})
+    {:ok, message}
+  end
+
 
   @doc """
   Deletes a intranet_message.

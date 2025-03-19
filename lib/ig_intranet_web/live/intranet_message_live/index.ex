@@ -6,7 +6,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :intranet_messages, Chats.list_intranet_message_with_preload())}
+    {:ok, assign(socket, :intranet_messages, Chats.list_intranet_message_with_preload())}
   end
 
   @impl true
@@ -43,14 +43,16 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
         {IgIntranetWeb.IntranetMessageLive.FormComponent, {:saved, intranet_message}},
         socket
       ) do
-    {:noreply, stream_insert(socket, :intranet_messages, intranet_message)}
+    {:noreply, assign(socket, :intranet_messages, intranet_message)}
   end
+
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     intranet_message = Chats.get_intranet_message_with_preload!(id)
     {:ok, _} = Chats.delete_intranet_message(intranet_message)
+    new_list = Chats.list_intranet_conversation_with_preload()
 
-    {:noreply, stream_delete(socket, :intranet_messages, intranet_message)}
+    {:noreply, assign(socket, :intranet_messages, new_list)}
   end
 end

@@ -23,7 +23,15 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
   @impl true
   def handle_info({:message_created, %{id: message_id}}, socket) do
     created_message = Chats.get_intranet_message_with_preload!(message_id)
-    {:noreply, assign(socket, :intranet_messages,[created_message | socket.assigns.intranet_messages])}
+    created_message |> IO.inspect(label: "lib/ig_intranet_web/live/intranet_chat_live/index.ex:26")
+    socket =
+      case (created_message.user_id != socket.assigns.current_user.id) do
+       true ->
+        socket |>  assign(:intranet_messages,[created_message | socket.assigns.intranet_messages])
+
+       _ -> socket
+    end
+    {:noreply, socket}
   end
 
   def handle_info(_msg, socket) do

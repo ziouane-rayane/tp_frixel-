@@ -46,7 +46,6 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
     {:noreply, update(socket, :intranet_messages, intranet_message)}
   end
 
-
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     intranet_message = Chats.get_intranet_message_with_preload!(id)

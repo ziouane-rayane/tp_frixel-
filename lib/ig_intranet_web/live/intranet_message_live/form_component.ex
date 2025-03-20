@@ -26,9 +26,8 @@ defmodule IgIntranetWeb.IntranetMessageLive.FormComponent do
           options={@intranet_conversations}
         />
         <.input field={@form[:message_body]} type="text" label="Message body" />
-        <.input field={@form[:recipient_id]} type="select" label="destinataire" options= {@users} />
-        <.input field={@form[:user_id]} type="hidden" value= {@current_user.id} />
-
+        <.input field={@form[:recipient_id]} type="select" label="destinataire" options={@users} />
+        <.input field={@form[:user_id]} type="hidden" value={@current_user.id} />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Intranet message</.button>

@@ -7,6 +7,7 @@ defmodule IgIntranet.Chats do
   alias IgIntranet.Repo
 
   alias IgIntranet.Chats.IntranetConversation
+  alias IgIntranet.Chats.IntranetMessage
 
   @doc """
   Returns the list of intranet_conversations.
@@ -20,7 +21,6 @@ defmodule IgIntranet.Chats do
   def list_intranet_conversations do
     Repo.all(IntranetConversation)
   end
-
 
   @doc """
   Returns the list of intranet_conversations with the intranet_messages associated.
@@ -166,9 +166,12 @@ defmodule IgIntranet.Chats do
       iex> list_intranet_message_with_preload()
       [%list_intranet_message{...intranet_message{}}, ...]
   """
-  def list_intranet_message_with_preload do
-    Repo.all(IntranetMessage)
-    |> Repo.preload([:user, :recipient, :intranet_conversation])
+  def list_intranet_message_with_preload_current_user(current_user_id) do
+    Repo.all(
+      from im in IntranetMessage,
+        where: im.user_id == ^current_user_id or im.recipient_id == ^current_user_id,
+        preload: [:user, :recipient, :intranet_conversation]
+    )
   end
 
   @doc """
@@ -235,11 +238,11 @@ defmodule IgIntranet.Chats do
   end
 
   defp broadcast({:error, _reason} = error, _event), do: error
+
   defp broadcast({:ok, message}, event) do
     Phoenix.PubSub.broadcast(IgIntranet.PubSub, "messages", {event, message})
     {:ok, message}
   end
-
 
   @doc """
   Deletes a intranet_message.

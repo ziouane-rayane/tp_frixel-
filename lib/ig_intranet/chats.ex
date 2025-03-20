@@ -21,6 +21,7 @@ defmodule IgIntranet.Chats do
     Repo.all(IntranetConversation)
   end
 
+
   @doc """
   Returns the list of intranet_conversations with the intranet_messages associated.
   ## Examples
@@ -167,7 +168,7 @@ defmodule IgIntranet.Chats do
   """
   def list_intranet_message_with_preload do
     Repo.all(IntranetMessage)
-    |> Repo.preload(:intranet_conversation)
+    |> Repo.preload([:user, :recipient, :intranet_conversation])
   end
 
   @doc """

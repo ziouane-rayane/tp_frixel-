@@ -3,6 +3,7 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
 
   alias IgIntranet.Chats
   alias IgIntranet.Chats.IntranetMessage
+  alias IgIntranet.Accounts
 
   @impl true
   def mount(_params, _session, socket) do
@@ -42,6 +43,7 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
     socket
     |> assign(:page_title, "Listing Intranet messages")
     |> assign(:intranet_message, nil)
+    |> assign(:users, Accounts.list_users())
     |> assign(:intranet_messages, Chats.list_intranet_message_with_preload())
   end
 

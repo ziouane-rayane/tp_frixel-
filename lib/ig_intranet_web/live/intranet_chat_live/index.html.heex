@@ -7,19 +7,17 @@
   </:actions>
 </.header>
 
-<p> <%= @current_user.email %> </p>
-<.table
-  id="intranet_messages"
-  rows={@intranet_messages}
->
+<p>{@current_user.email}</p>
+<.table id="intranet_messages" rows={@intranet_messages}>
   <:col :let={intranet_message} label="Conversation rattachée">
-
     {intranet_message.intranet_conversation &&
       "#{intranet_message.intranet_conversation.id}"}
   </:col>
-<:col :let={intranet_message} label="user">{intranet_message.user_id}</:col>
-<:col :let={intranet_message} label="destinataire">{(intranet_message.recipient && intranet_message.recipient.email) || "nothing"}</:col>
-  
+  <:col :let={intranet_message} label="user">{intranet_message.user_id}</:col>
+  <:col :let={intranet_message} label="destinataire">
+    {(intranet_message.recipient && intranet_message.recipient.email) || "nothing"}
+  </:col>
+
   <:col :let={intranet_message} label="Message body">{intranet_message.message_body}</:col>
   <:action :let={intranet_message}>
     <div class="sr-only">
@@ -27,10 +25,8 @@
     </div>
     <.link patch={~p"/intranet_messages/#{intranet_message.id}/edit"}>Edit</.link>
   </:action>
-  <:action :let={intranet_message}>
-  </:action>
+  <:action :let={intranet_message}></:action>
 </.table>
-
 
 <.modal
   :if={@live_action in [:new, :edit]}
@@ -46,7 +42,7 @@
     intranet_message={@intranet_message}
     intranet_conversations={@intranet_conversations |> Enum.map(&{&1.id, &1.id})}
     users={@users |> Enum.map(&{&1.email, &1.id})}
-    current_user = {@current_user}
+    current_user={@current_user}
     patch={~p"/intranet_chat"}
   />
 </.modal>

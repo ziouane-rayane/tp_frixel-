@@ -1,6 +1,7 @@
 defmodule IgIntranet.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias IgIntranet.Chats.IntranetMessage
 
   schema "users" do
     field :email, :string
@@ -10,7 +11,6 @@ defmodule IgIntranet.Accounts.User do
     field :confirmed_at, :utc_datetime
 
     has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
-
 
     timestamps(type: :utc_datetime)
   end

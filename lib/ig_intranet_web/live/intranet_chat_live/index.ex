@@ -4,6 +4,7 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
   alias IgIntranet.Chats
   alias IgIntranet.Chats.IntranetMessage
   alias IgIntranet.Accounts
+  alias IgIntranet.Chats.IntranetConversation
 
   @impl true
   def mount(_params, _session, socket) do
@@ -55,11 +56,21 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
-    intranet_conversations = Chats.list_intranet_conversation_with_preload()
-
     socket
     |> assign(:page_title, "New Intranet message")
-    |> assign(:intranet_conversations, intranet_conversations)
-    |> assign(:intranet_message, %IntranetMessage{})
+    |> assign(:intranet_conversation, %IntranetConversation{
+      intranet_messages: [%IntranetMessage{}]
+    })
+    |> assign(:intranet_message, nil)
+    |> assign(:users, Accounts.list_users())
+    |> assign(
+      :intranet_messages,
+      Chats.list_intranet_message_with_preload_current_user(socket.assigns.current_user.id)
+    )
+  end
+
+  @impl true
+  def handle_event(_event, _unsigned_params, socket) do
+    {:noreply, socket}
   end
 end

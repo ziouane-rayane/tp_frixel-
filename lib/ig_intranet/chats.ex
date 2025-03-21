@@ -141,6 +141,13 @@ defmodule IgIntranet.Chats do
     IntranetConversation.changeset(intranet_conversation, attrs)
   end
 
+  def change_intranet_conversation_with_preload(
+        %IntranetConversation{} = intranet_conversation,
+        attrs \\ %{}
+      ) do
+    IntranetConversation.changeset(intranet_conversation, attrs)
+  end
+
   def preload_intranet_messages(intranet_conversation) do
     Repo.preload(intranet_conversation, :intranet_messages)
   end
@@ -158,6 +165,11 @@ defmodule IgIntranet.Chats do
   """
   def list_intranet_messages do
     Repo.all(IntranetMessage)
+  end
+
+  def list_intranet_message_with_preload do
+    Repo.all(IntranetMessage)
+    |> Repo.preload([:user, :recipient, :intranet_conversation])
   end
 
   @doc """

@@ -3,16 +3,19 @@ defmodule IgIntranetWeb.IntranetConversationLiveTest do
 
   import Phoenix.LiveViewTest
   import IgIntranet.ChatsFixtures
+  import IgIntranetWeb.ConnCase
 
   @create_attrs %{
     conversation_type: "public",
-    conversation_status: "active"
+    conversation_status: "active",
+    conversation_topic: "movies"
   }
   @update_attrs %{
     conversation_type: "private",
-    conversation_status: "archived"
+    conversation_status: "archived",
+    conversation_topic: "serie"
   }
-  @invalid_attrs %{conversation_type: "private", conversation_status: "archived"}
+  @invalid_attrs %{conversation_type: "private", conversation_status: "archived", conversation_topic: "serie"}
 
   defp create_intranet_conversation(_) do
     intranet_conversation = intranet_conversation_fixture()
@@ -20,7 +23,7 @@ defmodule IgIntranetWeb.IntranetConversationLiveTest do
   end
 
   describe "Index" do
-    setup [:create_intranet_conversation]
+    setup [:create_intranet_conversation, :register_and_log_in_user]
 
     test "lists all intranet_conversations", %{
       conn: conn,
@@ -101,7 +104,7 @@ defmodule IgIntranetWeb.IntranetConversationLiveTest do
   end
 
   describe "Show" do
-    setup [:create_intranet_conversation]
+    setup [:create_intranet_conversation, :register_and_log_in_user]
 
     test "displays intranet_conversation", %{
       conn: conn,

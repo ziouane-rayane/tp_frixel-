@@ -6,7 +6,7 @@
     </.link>
   </:actions>
 </.header>
-
+<p>{@current_user.email}</p>
 <.table
   id="intranet_messages"
   rows={@intranet_messages}
@@ -43,11 +43,14 @@
 >
   <.live_component
     module={IgIntranetWeb.IntranetMessageLive.FormComponent}
-    id={@intranet_message.id || :new}
+    id={(@intranet_message && @intranet_message.id) || :new}
     title={@page_title}
     action={@live_action}
     intranet_message={@intranet_message}
     intranet_conversations={@intranet_conversations |> Enum.map(&{&1.id, &1.id})}
+    users={@users|> Enum.map(&{&1.id, &1.id})}
+    current_user={@current_user}
+
     patch={~p"/intranet_messages"}
   />
 </.modal>

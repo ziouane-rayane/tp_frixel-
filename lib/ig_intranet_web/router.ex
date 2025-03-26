@@ -35,11 +35,7 @@ defmodule IgIntranetWeb.Router do
     live "/intranet_conversations/:id/show/edit", IntranetConversationLive.Show, :edit
 
     # Routes de la live intranet_messages
-    live "/intranet_messages", IntranetMessageLive.Index, :index
-    live "/intranet_messages/new", IntranetMessageLive.Index, :new
-    live "/intranet_messages/:id/edit", IntranetMessageLive.Index, :edit
-    live "/intranet_messages/:id", IntranetMessageLive.Show, :show
-    live "/intranet_messages/:id/show/edit", IntranetMessageLive.Show, :edit
+
   end
 
   # Other scopes may use custom stacks.
@@ -84,17 +80,22 @@ defmodule IgIntranetWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{IgIntranetWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [{IgIntranetWeb.UserAuth, :ensure_authenticated}, {IgIntranetWeb.UserAuth, :mount_current_user}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
       live "/intranet_chat", IntranetChatLive.Index, :index
       live "/intranet_chat/new", IntranetChatLive.Index, :new
+      live "/intranet_messages", IntranetMessageLive.Index, :index
+      live "/intranet_messages/new", IntranetMessageLive.Index, :new
+      live "/intranet_messages/:id/edit", IntranetMessageLive.Index, :edit
+      live "/intranet_messages/:id", IntranetMessageLive.Show, :show
+      live "/intranet_messages/:id/show/edit", IntranetMessageLive.Show, :edit
     end
   end
 
   scope "/", IgIntranetWeb do
     pipe_through [:browser]
-
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,

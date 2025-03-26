@@ -8,6 +8,7 @@ defmodule IgIntranet.ChatsTest do
 
     import IgIntranet.ChatsFixtures
 
+
     @invalid_attrs %{conversation_type: nil, conversation_status: nil}
 
     test "list_intranet_conversations/0 returns all intranet_conversations" do
@@ -23,7 +24,8 @@ defmodule IgIntranet.ChatsTest do
     test "create_intranet_conversation/1 with valid data creates a intranet_conversation" do
       valid_attrs = %{
         conversation_type: "public",
-        conversation_status: "active"
+        conversation_status: "active",
+        conversation_topic: "power"
       }
 
       assert {:ok, %IntranetConversation{} = intranet_conversation} =
@@ -80,7 +82,7 @@ defmodule IgIntranet.ChatsTest do
 
   describe "intranet_messages" do
     alias IgIntranet.Chats.IntranetMessage
-
+    import IgIntranet.AccountsFixtures
     import IgIntranet.ChatsFixtures
 
     @invalid_attrs %{message_body: nil}
@@ -92,7 +94,22 @@ defmodule IgIntranet.ChatsTest do
       %{intranet_conversation: intranet_conversation}
     end
 
-    setup [:create_intranet_conversation]
+    defp create_user(_) do
+      user =
+        user_fixture()
+
+      %{user: user}
+    end
+
+    defp create_recipient_user(_) do
+      user =
+        user_fixture()
+
+      %{recipient_user: user}
+    end
+
+
+    setup [:create_intranet_conversation, :create_user, :create_recipient_user ]
 
     test "list_intranet_messages/0 returns all intranet_messages", %{
       intranet_conversation: intranet_conversation
@@ -113,11 +130,15 @@ defmodule IgIntranet.ChatsTest do
     end
 
     test "create_intranet_message/1 with valid data creates a intranet_message", %{
-      intranet_conversation: intranet_conversation
+      intranet_conversation: intranet_conversation,
+      user: user,
+      recipient_user: recipient_user
     } do
       valid_attrs = %{
         message_body: "some message_body",
-        intranet_conversation_id: intranet_conversation.id
+        intranet_conversation_id: intranet_conversation.id,
+        user_id: user.id,
+        recipient_id: recipient_user.id
       }
 
       assert {:ok, %IntranetMessage{} = intranet_message} =

@@ -38,14 +38,6 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
           <.input field={ef[:user_id]} type="hidden" value={@current_user.id} />
         </.inputs_for>
 
-        <%!-- <.input
-          field={@form[:intranet_conversation_id]}
-          type="select"
-          label="Conversation rattachée"
-          options={@intranet_conversations}
-        /> --%>
-        <%!-- <.input field={@form[:message_body]} type="text" label="Message body" /> --%>
-
         <:actions>
           <.button phx-disable-with="Saving...">Save Intranet message</.button>
         </:actions>

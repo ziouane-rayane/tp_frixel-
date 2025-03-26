@@ -7,6 +7,7 @@ defmodule IgIntranet.Chats do
   alias IgIntranet.Repo
 
   alias IgIntranet.Chats.IntranetConversation
+  alias IgIntranet.Chats.IntranetMessage
 
   @doc """
   Returns the list of intranet_conversations.
@@ -140,6 +141,13 @@ defmodule IgIntranet.Chats do
     IntranetConversation.changeset(intranet_conversation, attrs)
   end
 
+  def change_intranet_conversation_with_preload(
+        %IntranetConversation{} = intranet_conversation,
+        attrs \\ %{}
+      ) do
+    IntranetConversation.changeset(intranet_conversation, attrs)
+  end
+
   def preload_intranet_messages(intranet_conversation) do
     Repo.preload(intranet_conversation, :intranet_messages)
   end
@@ -159,15 +167,23 @@ defmodule IgIntranet.Chats do
     Repo.all(IntranetMessage)
   end
 
+  def list_intranet_message_with_preload do
+    Repo.all(IntranetMessage)
+    |> Repo.preload([:user, :recipient, :intranet_conversation])
+  end
+
   @doc """
   Returns the list of intranet_messages with the intranet_conversation associated.
   ## Examples
       iex> list_intranet_message_with_preload()
       [%list_intranet_message{...intranet_message{}}, ...]
   """
-  def list_intranet_message_with_preload do
-    Repo.all(IntranetMessage)
-    |> Repo.preload(:intranet_conversation)
+  def list_intranet_message_with_preload_current_user(current_user_id) do
+    Repo.all(
+      from im in IntranetMessage,
+        where: im.user_id == ^current_user_id or im.recipient_id == ^current_user_id,
+        preload: [:user, :recipient, :intranet_conversation]
+    )
   end
 
   @doc """
@@ -207,6 +223,7 @@ defmodule IgIntranet.Chats do
     %IntranetMessage{}
     |> IntranetMessage.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:message_created)
   end
 
   @doc """
@@ -225,6 +242,18 @@ defmodule IgIntranet.Chats do
     intranet_message
     |> IntranetMessage.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:message_updated)
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(IgIntranet.PubSub, "messages")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+
+  defp broadcast({:ok, message}, event) do
+    Phoenix.PubSub.broadcast(IgIntranet.PubSub, "messages", {event, message})
+    {:ok, message}
   end
 
   @doc """

@@ -181,8 +181,8 @@ defmodule IgIntranet.Chats do
   def list_intranet_message_with_preload_current_user(current_user_id) do
     Repo.all(
       from im in IntranetMessage,
-        where: im.user_id == ^current_user_id or im.recipient_id == ^current_user_id,
-        preload: [:user, :recipient, :intranet_conversation]
+        where: im.user_id == ^current_user_id ,
+        preload: [:user, :intranet_conversation]
     )
   end
 

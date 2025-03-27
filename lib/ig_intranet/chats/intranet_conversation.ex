@@ -45,6 +45,7 @@ defmodule IgIntranet.Chats.IntranetConversation do
     field :conversation_status, Ecto.Enum, values: [:active, :archived]
     field :conversation_topic, :string
 
+    many_to_many :users, IgIntranet.Accounts.User, join_through: "conversations_users"
     has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
 
     timestamps(type: :utc_datetime)
@@ -57,5 +58,6 @@ defmodule IgIntranet.Chats.IntranetConversation do
     |> validate_required([:conversation_type, :conversation_status, :conversation_topic])
     |> unique_constraint(:conversation_topic)
     |> cast_assoc(:intranet_messages, with: &IntranetMessage.changeset_with_conversation/2)
+    |> cast_assoc(:users, with: &IgIntranet.Accounts.User.conversations_changeset/2)
   end
 end

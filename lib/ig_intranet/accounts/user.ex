@@ -10,6 +10,9 @@ defmodule IgIntranet.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
 
+
+    many_to_many :intranet_conversations, IgIntranet.Chats.IntranetConversation, join_through: "conversations_users"
+
     has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
 
     timestamps(type: :utc_datetime)
@@ -160,5 +163,11 @@ defmodule IgIntranet.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def conversations_changeset(user, attrs) do
+    user
+    |> cast(attrs, [])
+    |> put_assoc()
   end
 end

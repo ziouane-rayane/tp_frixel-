@@ -34,7 +34,6 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
 
         <.inputs_for :let={ef} field={@form[:intranet_messages]}>
           <.input type="text" field={ef[:message_body]} placeholder="new message" />
-          <.input field={ef[:recipient_id]} type="select" label="destinataire" options={@users} />
           <.input field={ef[:user_id]} type="hidden" value={@current_user.id} />
         </.inputs_for>
 

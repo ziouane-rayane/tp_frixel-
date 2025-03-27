@@ -71,6 +71,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.FormComponent do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
+
     end
   end
 

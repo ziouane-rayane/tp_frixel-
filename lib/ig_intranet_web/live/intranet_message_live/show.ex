@@ -5,7 +5,10 @@ defmodule IgIntranetWeb.IntranetMessageLive.Show do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok,
+     socket
+    |> assign(:users, IgIntranet.Accounts.list_users)
+    }
   end
 
   @impl true
@@ -17,6 +20,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:intranet_conversations, intranet_conversations)
      |> assign(:intranet_message, Chats.get_intranet_message_with_preload!(id))}
+
 
   end
 

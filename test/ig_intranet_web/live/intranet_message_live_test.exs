@@ -56,22 +56,25 @@ defmodule IgIntranetWeb.IntranetMessageLiveTest do
       assert html =~ "some message_body"
     end
 
-    test "updates intranet_message in listing", %{conn: conn, intranet_message: intranet_message} do
+    test "updates intranet_message in listing", %{conn: conn, intranet_message: intranet_message, user: user} do
       {:ok, index_live, _html} = live(conn, ~p"/intranet_messages")
-
       assert index_live
-             |> element("#intranet_messages-#{intranet_message.id} a", "Edit")
+             |> element("a", "Edit")
              |> render_click() =~
                "Edit Intranet message"
 
-      assert_patch(index_live, ~p"/intranet_messages/#{intranet_message}/edit")
-
+      assert_patch(index_live, ~p"/intranet_messages/#{intranet_message.id}/edit")
       assert index_live
              |> form("#intranet_message-form", intranet_message: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
+             update_attrs = @update_attrs |> Map.merge(%{
+              user_id: user.id,
+              recipient_id: intranet_message.recipient_id
+             })
+
       assert index_live
-             |> form("#intranet_message-form", intranet_message: @update_attrs)
+             |> form("#intranet_message-form", intranet_message: update_attrs)
              |> render_submit()
 
       assert_patch(index_live, ~p"/intranet_messages")
@@ -85,7 +88,7 @@ defmodule IgIntranetWeb.IntranetMessageLiveTest do
       {:ok, index_live, _html} = live(conn, ~p"/intranet_messages")
 
       assert index_live
-             |> element("#intranet_messages-#{intranet_message.id} a", "Delete")
+             |> element("a", "Delete")
              |> render_click()
 
       refute has_element?(index_live, "#intranet_messages-#{intranet_message.id}")
@@ -104,21 +107,25 @@ defmodule IgIntranetWeb.IntranetMessageLiveTest do
 
     test "updates intranet_message within modal", %{
       conn: conn,
-      intranet_message: intranet_message
+      intranet_message: intranet_message, user: user
     } do
-      {:ok, show_live, _html} = live(conn, ~p"/intranet_messages/#{intranet_message}")
+      {:ok, show_live, _html} = live(conn, ~p"/intranet_messages/#{intranet_message.id}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Intranet message"
 
-      assert_patch(show_live, ~p"/intranet_messages/#{intranet_message}/show/edit")
+      assert_patch(show_live, ~p"/intranet_messages/#{intranet_message.id}/show/edit")
 
       assert show_live
              |> form("#intranet_message-form", intranet_message: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
+             update_attrs = @update_attrs |> Map.merge(%{
+              user_id: user.id,
+              recipient_id: intranet_message.recipient_id
+             })
 
       assert show_live
-             |> form("#intranet_message-form", intranet_message: @update_attrs)
+             |> form("#intranet_message-form", intranet_message: update_attrs)
              |> render_submit()
 
       assert_patch(show_live, ~p"/intranet_messages/#{intranet_message}")

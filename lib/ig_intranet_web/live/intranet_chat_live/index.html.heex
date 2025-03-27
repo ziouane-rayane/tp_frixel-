@@ -22,8 +22,41 @@
         </div>
       </div>
     <% end %>
+
+
   </div>
-  
+  <div class="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex items-center gap-2">
+  <.form for={@changeset} phx-submit="send_message" class="flex w-full">
+
+    <select name="intranet_conversation_id" class="border p-2 rounded-md text-gray-700">
+      <option value="">Choisir une conversation</option>
+      <%= for intranet_conversation <- @intranet_conversations do %>
+        <option value={intranet_conversation.id}>Conversation {intranet_conversation.id}</option>
+      <% end %>
+    </select>
+
+    <select name="recipient_id" class="border p-2 rounded-md text-gray-700">
+      <option value="">Choisir un destinataire</option>
+      <%= for user <- @users do %>
+        <option value={user.id}><%= user.email %></option>
+      <% end %>
+    </select>
+
+    <input 
+      type="text" 
+      name="message_body" 
+      placeholder="Écrivez un message" 
+      class="flex-1 border p-2 rounded-md text-gray-700"
+      required
+    />
+
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+      Envoyer
+    </button>
+  </.form>
+</div>
+
+
 </div>
 
 

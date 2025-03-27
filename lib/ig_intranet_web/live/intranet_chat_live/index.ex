@@ -49,6 +49,8 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
     |> assign(:page_title, "Listing Intranet messages")
     |> assign(:intranet_message, nil)
     |> assign(:users, Accounts.list_users())
+    |> assign(:intranet_conversations, Chats.list_intranet_conversations())
+    |> assign(:changeset, Chats.change_intranet_message(%IntranetMessage{}))
     |> assign(
       :intranet_messages,
       Chats.list_intranet_message_with_preload_current_user(current_user_id)
@@ -70,7 +72,27 @@ defmodule IgIntranetWeb.IntranetChatLive.Index do
   end
 
   @impl true
+  def handle_event("send_message", %{
+        "message_body" => message_body,
+        "recipient_id" => recipient_id,
+        "intranet_conversation_id" => intranet_conversation_id
+      }, socket) do
+
+      {:ok, message} = Chats.create_intranet_message(%{
+      message_body: message_body,
+      user_id: socket.assigns.current_user.id,
+      recipient_id: recipient_id,
+      intranet_conversation_id: intranet_conversation_id
+    })
+
+    {:noreply, assign(socket, :intranet_messages, [message | socket.assigns.intranet_messages])}
+  end
+
+
+
+  @impl true
   def handle_event(_event, _unsigned_params, socket) do
     {:noreply, socket}
   end
+
 end

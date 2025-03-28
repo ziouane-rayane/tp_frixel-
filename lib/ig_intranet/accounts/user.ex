@@ -165,9 +165,4 @@ defmodule IgIntranet.Accounts.User do
     end
   end
 
-  def conversations_changeset(user, attrs) do
-    user
-    |> cast(attrs, [])
-    |> put_assoc()
-  end
 end

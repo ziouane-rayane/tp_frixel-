@@ -7,13 +7,12 @@ defmodule IgIntranet.Repo.Migrations.ConversationsUsers do
           references(:users, on_delete: :delete_all),
           null: false
 
-      add :conversation_id,
+      add :intranet_conversation_id,
           references(:intranet_conversations, on_delete: :delete_all),
           null: false
 
-      timestamps()
     end
 
-    create unique_index(:conversations_users, [:user_id, :conversation_id])
+    create unique_index(:conversations_users, [:user_id, :intranet_conversation_id])
   end
 end

@@ -1,6 +1,8 @@
-defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
+defmodule IgIntranetWeb.IntranetConvLive.FormComponent do
   use IgIntranetWeb, :live_component
+
   alias IgIntranet.Chats
+  alias IgIntranet.Accounts
 
   @impl true
   def render(assigns) do
@@ -8,23 +10,25 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
     <div>
       <.header>
         {@title}
-        <:subtitle>Use this form to manage intranet_message records in your database.</:subtitle>
+        <:subtitle>Use this form to manage intranet_conversation records and associate users to the conversation.</:subtitle>
       </.header>
 
       <.simple_form
         for={@form}
-        id="intranet_message-form"
+        id="intranet_conversation-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:conversation_topic]} type="text" label="new topic" />
+        <.input field={@form[:conversation_topic]} type="text" label="Conversation topic" />
+
         <.input
           field={@form[:conversation_type]}
           type="select"
           options={Ecto.Enum.values(IgIntranet.Chats.IntranetConversation, :conversation_type)}
           label="Conversation type"
         />
+
         <.input
           field={@form[:conversation_status]}
           type="select"
@@ -32,18 +36,22 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
           label="Conversation status"
         />
 
-        <.inputs_for :let={ef} field={@form[:intranet_messages]}>
-          <.input type="text" field={ef[:message_body]} placeholder="new message" />
-          <.input field={ef[:user_id]} type="hidden" value={@current_user.id} />
-        </.inputs_for>
+        <.input
+          field={@form[:user_ids]}
+          type="select"
+          options={@users}
+          multiple={true}
+          label="Select users"
+        />
 
         <:actions>
-          <.button phx-disable-with="Saving...">Save Intranet message</.button>
+          <.button phx-disable-with="Saving...">Save Intranet conversation</.button>
         </:actions>
       </.simple_form>
     </div>
     """
   end
+
 
   @impl true
   def update(%{intranet_conversation: intranet_conversation} = assigns, socket) do
@@ -51,7 +59,7 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign_new(:form, fn ->
-       to_form(Chats.change_intranet_conversation_with_preload(intranet_conversation))
+       to_form(Chats.change_intranet_conversation(intranet_conversation))
      end)}
   end
 
@@ -80,7 +88,7 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Intranet message updated successfully")
+         |> put_flash(:info, "Intranet conversation updated successfully")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -89,14 +97,13 @@ defmodule IgIntranetWeb.IntranetChatLive.FormComponent do
   end
 
   defp save_intranet_conversation(socket, :new, intranet_conversation_params) do
-    Chats.create_intranet_conversation(intranet_conversation_params)
-    |> case do
+    case Chats.create_intranet_conversation_related_to_user(intranet_conversation_params |> IO.inspect(label: "params")) do
       {:ok, intranet_conversation} ->
         notify_parent({:saved, intranet_conversation |> Chats.preload_intranet_messages()})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Intranet message created successfully")
+         |> put_flash(:info, "Intranet conversation created successfully")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

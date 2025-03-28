@@ -94,6 +94,14 @@ defmodule IgIntranet.Chats do
     |> Repo.insert()
   end
 
+  def create_intranet_conversation_related_to_user(attrs \\ %{}) do
+    %IntranetConversation{}
+    |> IntranetConversation.changeset_many_to_many(attrs)
+    |> Repo.insert()
+  end
+
+
+
   @doc """
   Updates a intranet_conversation.
 
@@ -181,8 +189,19 @@ defmodule IgIntranet.Chats do
   def list_intranet_message_with_preload_current_user(current_user_id) do
     Repo.all(
       from im in IntranetMessage,
-        where: im.user_id == ^current_user_id or im.recipient_id == ^current_user_id,
-        preload: [:user, :recipient, :intranet_conversation]
+        where: im.user_id == ^current_user_id ,
+        preload: [:user, :intranet_conversation]
+    )
+  end
+
+
+  def list_intranet_conversation_with_preload_user(current_user_id) do
+    Repo.all(
+      from ic in IntranetConversation,
+      join: cu in "conversations_users",
+      on: cu.intranet_conversation_id == ic.id,
+      where: cu.user_id == ^current_user_id,
+      preload: [:users, :intranet_messages]
     )
   end
 

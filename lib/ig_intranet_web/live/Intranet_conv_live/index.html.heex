@@ -1,0 +1,96 @@
+<.header>
+  Listing Intranet conversations
+  <:actions>
+    <.link patch={~p"/intranet_conv/new"}>
+      <.button>New Intranet conversation</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="intranet_conversations"
+  rows={@intranet_conversations}
+>
+    <:col
+      :let={intranet_conversation}
+      label="Date création"
+    >
+      {intranet_conversation.inserted_at |> Calendar.strftime("%d-%m-%Y %H:%M:%S")}
+    </:col>
+    <:col :let={intranet_conversation} label="Conversation type">
+      {intranet_conversation.conversation_type}
+    </:col>
+    <:col
+      :let={intranet_conversation}
+      label={gettext("Conversation topic")}
+    >
+      {intranet_conversation.conversation_topic}
+    </:col>
+
+    <:col
+      :let={intranet_conversation}
+      label="Conversation status"
+    >
+      {intranet_conversation.conversation_status}
+    </:col>
+    <:col :let={intranet_conversation} label="Messages associés">
+      <%= if intranet_conversation.intranet_messages != [] do %>
+        <ul>
+          <%= for intranet_messages <- intranet_conversation.intranet_messages do %>
+            <li>{intranet_messages.message_body}</li>
+          <% end %>
+        </ul>
+      <% else %>
+        Aucun message rattaché à cette conversation
+      <% end %>
+    </:col>
+
+    <:col :let={intranet_conversation} label="Users associés">
+    <%= if intranet_conversation.users != [] do %>
+        <ul>
+        <%= for user <- intranet_conversation.users do %>
+            <li><%= user.email %></li>
+        <% end %>
+        </ul>
+    <% else %>
+        Aucun user rattaché à cette conversation
+    <% end %>
+    </:col>
+    
+      <:action :let={intranet_message}>
+    <div class="sr-only">
+      <.link navigate={~p"/intranet_messages/#{intranet_message.id}"}>Show</.link>
+    </div>
+    <.link patch={~p"/intranet_messages/#{intranet_message.id}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={intranet_message}>
+    <.link
+      phx-click={
+        JS.push("delete", value: %{id: intranet_message.id}) |> hide("##{intranet_message.id}")
+      }
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="intranet_conv-modal"
+  show
+  on_cancel={JS.patch(~p"/intranet_conv")}
+>
+  <.live_component
+    module={IgIntranetWeb.IntranetConvLive.FormComponent}
+    id={(@intranet_message && @intranet_message.id) || :new}
+    title={@page_title}
+    action={@live_action}
+    intranet_message={@intranet_message}
+    intranet_conversation={@intranet_conversation}
+    users={@users |> Enum.map(&{&1.email, &1.id})}
+    current_user={@current_user}
+    patch={~p"/intranet_conv"}
+  />
+</.modal>
+

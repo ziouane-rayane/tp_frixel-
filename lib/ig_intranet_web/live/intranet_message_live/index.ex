@@ -3,6 +3,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
 
   alias IgIntranet.Chats
   alias IgIntranet.Chats.IntranetMessage
+  alias IgIntranet.Accounts
 
   @impl true
   def mount(_params, _session, socket) do
@@ -21,6 +22,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
     |> assign(:page_title, "Edit Intranet message")
     |> assign(:intranet_conversations, intranet_conversations)
     |> assign(:intranet_message, Chats.get_intranet_message_with_preload!(id))
+    |> assign(:users, Accounts.list_users)
   end
 
   defp apply_action(socket, :new, _params) do
@@ -30,12 +32,17 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
     |> assign(:page_title, "New Intranet message")
     |> assign(:intranet_conversations, intranet_conversations)
     |> assign(:intranet_message, %IntranetMessage{})
+    |> assign(:users, Accounts.list_users)
+    |> assign(
+      :intranet_messages,
+      Chats.list_intranet_message_with_preload_current_user(socket.assigns.current_user.id))
   end
 
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Intranet messages")
     |> assign(:intranet_message, nil)
+    |> assign(:users, Accounts.list_users())
   end
 
   @impl true
@@ -50,7 +57,7 @@ defmodule IgIntranetWeb.IntranetMessageLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     intranet_message = Chats.get_intranet_message_with_preload!(id)
     {:ok, _} = Chats.delete_intranet_message(intranet_message)
-    new_list = Chats.list_intranet_conversation_with_preload()
+    new_list = Chats.list_intranet_message_with_preload()
 
     {:noreply, assign(socket, :intranet_messages, new_list)}
   end

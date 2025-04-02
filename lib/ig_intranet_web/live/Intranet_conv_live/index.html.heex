@@ -10,6 +10,8 @@
 <.table
   id="intranet_conversations"
   rows={@intranet_conversations}
+  row_click={fn intranet_conversation -> JS.navigate(~p"/intranet_conv/#{intranet_conversation}") end}
+
 >
     <:col
       :let={intranet_conversation}
@@ -56,23 +58,13 @@
         Aucun user rattaché à cette conversation
     <% end %>
     </:col>
+    <:action :let={intranet_conversation} col_class="relative w-14 p-0">
+      <span class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
+        <.link patch={~p"/intranet_conv/#{intranet_conversation}/edit"}>Edit</.link>
+      </span>
+    </:action>
     
-      <:action :let={intranet_message}>
-    <div class="sr-only">
-      <.link navigate={~p"/intranet_messages/#{intranet_message.id}"}>Show</.link>
-    </div>
-    <.link patch={~p"/intranet_messages/#{intranet_message.id}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={intranet_message}>
-    <.link
-      phx-click={
-        JS.push("delete", value: %{id: intranet_message.id}) |> hide("##{intranet_message.id}")
-      }
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
-  </:action>
+     
 </.table>
 
 <.modal
@@ -89,6 +81,7 @@
     intranet_message={@intranet_message}
     intranet_conversation={@intranet_conversation}
     users={@users |> Enum.map(&{&1.email, &1.id})}
+    users_in_conv={@users_in_conv |> Enum.map(& &1.id)}
     current_user={@current_user}
     patch={~p"/intranet_conv"}
   />

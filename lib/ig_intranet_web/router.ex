@@ -93,6 +93,9 @@ defmodule IgIntranetWeb.Router do
       live "/intranet_messages/:id/show/edit", IntranetMessageLive.Show, :edit
       live "/intranet_conv", IntranetConvLive.Index, :index
       live "/intranet_conv/new", IntranetConvLive.Index, :new
+      live "/intranet_conv/:id/edit", IntranetConvLive.Index, :edit
+      live "/intranet_conv/:id", IntranetConvLive.Show, :show
+      live "/intranet_conv/:id/show/edit", IntranetConvLive.Show, :edit
     end
   end
 

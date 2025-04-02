@@ -2,7 +2,7 @@ defmodule IgIntranetWeb.IntranetConvLive.FormComponent do
   use IgIntranetWeb, :live_component
 
   alias IgIntranet.Chats
-  alias IgIntranet.Accounts
+
 
   @impl true
   def render(assigns) do
@@ -41,8 +41,15 @@ defmodule IgIntranetWeb.IntranetConvLive.FormComponent do
           type="select"
           options={@users}
           multiple={true}
+          value={@users_in_conv}
           label="Select users"
         />
+
+        <.inputs_for :let={ef} field={@form[:intranet_messages]}>
+          <.input type="text" field={ef[:message_body]} placeholder="new message" />
+          <.input field={ef[:user_id]} type="hidden" value={@current_user.id} />
+        </.inputs_for>
+
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Intranet conversation</.button>
@@ -78,8 +85,23 @@ defmodule IgIntranetWeb.IntranetConvLive.FormComponent do
     save_intranet_conversation(socket, socket.assigns.action, intranet_conversation_params)
   end
 
+  defp save_intranet_conversation(socket, :new, intranet_conversation_params) do
+    case Chats.create_intranet_conversation_related_to_user(intranet_conversation_params |> IO.inspect(label: "params")) do
+      {:ok, intranet_conversation} ->
+        notify_parent({:saved, intranet_conversation |> Chats.preload_intranet_messages()})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Intranet conversation created successfully")
+         |> push_patch(to: socket.assigns.patch)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, form: to_form(changeset))}
+    end
+  end
+
   defp save_intranet_conversation(socket, :edit, intranet_conversation_params) do
-    case Chats.update_intranet_conversation(
+    case Chats.update_intranet_conversation_with_user(
            socket.assigns.intranet_conversation,
            intranet_conversation_params
          ) do
@@ -96,20 +118,6 @@ defmodule IgIntranetWeb.IntranetConvLive.FormComponent do
     end
   end
 
-  defp save_intranet_conversation(socket, :new, intranet_conversation_params) do
-    case Chats.create_intranet_conversation_related_to_user(intranet_conversation_params |> IO.inspect(label: "params")) do
-      {:ok, intranet_conversation} ->
-        notify_parent({:saved, intranet_conversation |> Chats.preload_intranet_messages()})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Intranet conversation created successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
-    end
-  end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

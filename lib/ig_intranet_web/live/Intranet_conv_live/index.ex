@@ -43,6 +43,20 @@ defmodule IgIntranetWeb.IntranetConvLive.Index do
     |> assign(:intranet_message, nil)
     |> assign(:users, Accounts.list_users())
     |> assign(:intranet_conversations, Chats.list_intranet_conversation_with_preload_user(socket.assigns.current_user.id))
+    |> assign(:users_in_conv, [])
+  end
+
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "Edit Intranet conversation")
+    |> assign(:intranet_conversation, Chats.get_intranet_conversation_with_preload!(id))
+    |> assign(
+      :intranet_conversations,
+      Chats.list_intranet_conversation_with_preload_user(socket.assigns.current_user.id)
+    )
+    |> assign(:intranet_message, %IntranetMessage{})
+    |> assign(:users, Accounts.list_users())
+    |> assign(:users_in_conv, Accounts.list_users_by_conversation(id))
   end
 
 end

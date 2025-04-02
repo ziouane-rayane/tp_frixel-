@@ -55,6 +55,16 @@ defmodule IgIntranet.Chats do
     )
   end
 
+  def list_messages_conversation(conversation_id) do
+    IntranetMessage
+    |> where([m], m.intranet_conversation_id == ^conversation_id)
+    |> join(:inner, [m], u in assoc(m, :user))
+    |> preload([m, u], user: u)
+    |> order_by([m], asc: m.inserted_at)
+    |> Repo.all()
+  end
+
+
   @doc """
   Gets a single intranet_conversation.
 
@@ -75,6 +85,8 @@ defmodule IgIntranet.Chats do
     do:
       Repo.get!(IntranetConversation, id)
       |> Repo.preload(:intranet_messages)
+      |> Repo.preload(:users)
+
 
   @doc """
   Creates a intranet_conversation.
@@ -119,6 +131,14 @@ defmodule IgIntranet.Chats do
     |> IntranetConversation.changeset(attrs)
     |> Repo.update()
   end
+
+
+  def update_intranet_conversation_with_user(%IntranetConversation{} = intranet_conversation, attrs) do
+    intranet_conversation
+    |> IntranetConversation.changeset_many_to_many(attrs)
+    |> Repo.update()
+  end
+
 
   @doc """
   Deletes a intranet_conversation.

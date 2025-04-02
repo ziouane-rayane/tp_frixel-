@@ -1,0 +1,78 @@
+<.header>
+  Intranet conversation {@intranet_conversation.id}
+  <:subtitle>This is a intranet_conversation record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/intranet_conv/#{@intranet_conversation}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit intranet_conversation</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Conversation topic">{@intranet_conversation.conversation_topic}</:item>
+  <:item title="Messages associés">
+    <div class="p-4 bg-gray-100 h-screen overflow-y-auto">
+  <div class="max-w-2xl mx-auto">
+    <%= for intranet_message <- @intranet_messages do %>
+      <% is_current_user = intranet_message.user_id == @current_user.id %>
+      <div class={"mb-1 text-sm font-semibold " <> if is_current_user, do: "text-right text-blue-600", else: "text-left text-gray-700"}>
+        <%= if is_current_user, do: "Me", else: intranet_message.user.email %>
+      </div>
+      <div class={"flex mb-3 " <> if is_current_user, do: "justify-end", else: "justify-start"}>
+        <div class={"rounded-lg px-4 py-2 max-w-xs " <>
+          if is_current_user, do: "bg-blue-500 text-white", else: "bg-gray-200 text-gray-900"}>
+          <p><%= intranet_message.message_body %></p>
+        </div>
+      </div>
+    <% end %>
+
+
+  </div>
+  <div class="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex items-center gap-2">
+  <.form for={@changeset} phx-submit="send_message" class="flex w-full">
+
+    <input 
+      type="text" 
+      name="message_body" 
+      placeholder="Écrivez un message" 
+      class="flex-1 border p-2 rounded-md text-gray-700"
+      required
+    />
+
+    <input type="hidden"  name="user_id" value={@current_user.id} />
+    <input type="hidden" name="intranet_conversation_id" value={@intranet_conversation.id} />
+
+
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+      Envoyer
+    </button>
+  </.form>
+</div>
+
+
+</div>
+  </:item>
+</.list>
+
+<.back navigate={~p"/intranet_conv"}>Back to intranet_conversations</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="intranet_conv-modal"
+  show
+  on_cancel={JS.patch(~p"/intranet_conv/#{@intranet_conv}")}
+>
+  <.live_component
+    module={IgIntranetWeb.IntranetConversationLive.FormComponent}
+    id={@intranet_conversation.id}
+    title={@page_title}
+    action={@live_action}
+    intranet_message={@intranet_message}
+    current_user={@current_user}
+    intranet_conversation={@intranet_conversation}
+    patch={~p"/intranet_conv/#{@intranet_conversation}"}
+  />
+</.modal>

@@ -11,7 +11,7 @@ defmodule IgIntranet.Accounts.User do
     field :confirmed_at, :utc_datetime
 
 
-    many_to_many :intranet_conversations, IgIntranet.Chats.IntranetConversation, join_through: "conversations_users"
+    many_to_many :intranet_conversations, IgIntranet.Chats.IntranetConversation, join_through: "conversations_users", on_replace: :delete
 
     has_many(:intranet_messages, IntranetMessage, on_delete: :delete_all)
 

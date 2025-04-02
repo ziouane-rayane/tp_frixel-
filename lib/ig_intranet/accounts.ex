@@ -64,6 +64,19 @@ defmodule IgIntranet.Accounts do
     Repo.all(User)
   end
 
+
+  def list_users_by_conversation(conversation_id) do
+    from(u in IgIntranet.Accounts.User,
+      join: ic in assoc(u, :intranet_conversations),
+      where: ic.id == ^conversation_id,
+      select: u
+    )
+    |> Repo.all()
+  end
+
+
+
+
   ## User registration
 
   @doc """

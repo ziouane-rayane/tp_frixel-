@@ -86,7 +86,7 @@ defmodule IgIntranetWeb.IntranetConvLive.FormComponent do
   end
 
   defp save_intranet_conversation(socket, :new, intranet_conversation_params) do
-    case Chats.create_intranet_conversation_related_to_user(intranet_conversation_params |> IO.inspect(label: "params")) do
+    case Chats.create_conversation_with_log(intranet_conversation_params, socket.assigns.current_user.email) do
       {:ok, intranet_conversation} ->
         notify_parent({:saved, intranet_conversation |> Chats.preload_intranet_messages()})
 

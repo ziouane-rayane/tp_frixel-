@@ -15,7 +15,14 @@ defmodule IgIntranetWeb.Router do
     plug :put_secure_browser_headers
     plug :fetch_current_user
     plug IgIntranetWeb.Plugs.Locale
+
   end
+
+  pipeline :admin do
+    plug :is_admin
+  end
+
+
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -34,7 +41,13 @@ defmodule IgIntranetWeb.Router do
     live "/intranet_conversations/:id", IntranetConversationLive.Show, :show
     live "/intranet_conversations/:id/show/edit", IntranetConversationLive.Show, :edit
 
-    # Routes de la live intranet_messages
+    # Routes de la live logs
+    live "/logs", LogLive.Index, :index
+    live "/logs/new", LogLive.Index, :new
+    live "/logs/:id/edit", LogLive.Index, :edit
+
+    live "/logs/:id", LogLive.Show, :show
+    live "/logs/:id/show/edit", LogLive.Show, :edit
 
   end
 
@@ -108,5 +121,11 @@ defmodule IgIntranetWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
+  end
+
+  scope "/admin", IgIntranetWeb do
+    pipe_through [:browser, :require_authenticated_user, :admin]
+
+      live "/logs", LogLive.Index, :index
   end
 end

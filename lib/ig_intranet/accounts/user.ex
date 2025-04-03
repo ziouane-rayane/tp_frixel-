@@ -9,6 +9,7 @@ defmodule IgIntranet.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+    field :admin, :boolean, default: false
 
 
     many_to_many :intranet_conversations, IgIntranet.Chats.IntranetConversation, join_through: "conversations_users", on_replace: :delete
@@ -43,7 +44,7 @@ defmodule IgIntranet.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :admin])
     |> validate_email(opts)
     |> validate_password(opts)
   end

@@ -33,7 +33,7 @@ defmodule IgIntranetWeb.UserRegistrationLive do
 
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:password]} type="password" label="Password" required />
-
+        <.input field={@form[:admin]} type="checkbox" label="Grant Admin Access" />
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
         </:actions>

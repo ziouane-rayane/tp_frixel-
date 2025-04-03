@@ -8,6 +8,7 @@ defmodule IgIntranet.Chats do
 
   alias IgIntranet.Chats.IntranetConversation
   alias IgIntranet.Chats.IntranetMessage
+  alias IgIntranet.ApplicationActivity.Log
 
   @doc """
   Returns the list of intranet_conversations.
@@ -111,6 +112,27 @@ defmodule IgIntranet.Chats do
     |> IntranetConversation.changeset_many_to_many(attrs)
     |> Repo.insert()
   end
+
+
+  def create_conversation_with_log(attrs, user_email) do
+    Repo.transaction(fn ->
+      conversation =
+        %IntranetConversation{}
+        |> IntranetConversation.changeset_many_to_many(attrs)
+        |> Repo.insert!()
+
+      log_attrs = %{
+        log_event: "conversation_created",
+        user_email: user_email
+      }
+
+      Repo.insert!(Log.changeset(%Log{}, log_attrs))
+
+      conversation
+    end)
+  end
+
+
 
 
 

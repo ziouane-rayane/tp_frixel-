@@ -219,7 +219,7 @@ defmodule IgIntranet.Chats do
 
   def list_intranet_message_with_preload do
     Repo.all(IntranetMessage)
-    |> Repo.preload([:user, :recipient, :intranet_conversation])
+    |> Repo.preload([:user, :intranet_conversation])
   end
 
   @doc """

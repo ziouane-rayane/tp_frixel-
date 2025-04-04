@@ -25,6 +25,11 @@
         <div class={"rounded-lg px-4 py-2 max-w-xs " <>
           if is_current_user, do: "bg-blue-500 text-white", else: "bg-gray-200 text-gray-900"}>
           <p><%= intranet_message.message_body %></p>
+          <%= unless is_nil(intranet_message.meta_data.mentions)  do  %>
+            <%= for mention <- intranet_message.meta_data.mentions do %>
+              <p><%= mention <> " " %></p>
+            <% end %>
+            <% end %>
         </div>
       </div>
     <% end %>
@@ -34,17 +39,21 @@
   <div class="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex items-center gap-2">
   <.form for={@changeset} phx-submit="send_message" class="flex w-full">
 
-    <input 
-      type="text" 
-      name="message_body" 
-      placeholder="Écrivez un message" 
-      class="flex-1 border p-2 rounded-md text-gray-700"
-      required
-    />
+    <.input field={@changeset[:message_body]} type="text" label="message body" />
 
-    <input type="hidden"  name="user_id" value={@current_user.id} />
-    <input type="hidden" name="intranet_conversation_id" value={@intranet_conversation.id} />
+    <.input field={@changeset[:user_id]} type="hidden" value={@current_user.id} />
+    <.input field={@changeset[:intranet_conversation_id]} type="hidden" value={@intranet_conversation.id} />
 
+    <.inputs_for :let={ef} field={@changeset[:meta_data]}>
+      <.input type="url" field={ef[:url]} placeholder="url"  />
+      <.input
+          field={ef[:mentions]}
+          type="select"
+          options={@users_in_conv |> Enum.map(& &1.email)}
+          multiple={true}
+          label="Select users"
+        />
+    </.inputs_for>
 
     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">
       Envoyer
@@ -73,6 +82,7 @@
     intranet_message={@intranet_message}
     current_user={@current_user}
     intranet_conversation={@intranet_conversation}
+    users_in_conv={@users_in_conv |> Enum.map(& &1.id)}
     patch={~p"/intranet_conv/#{@intranet_conversation}"}
   />
 </.modal>
